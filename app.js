@@ -1,4 +1,5 @@
 const express = require("express");
+const { adminAuth, userAuth } = require("./middlewares/auth");
 
 const app = express();
 
@@ -9,9 +10,42 @@ const app = express();
 //   res.send("Namshte Rahul");
 // });
 
+//error handler
+
+app.get("/getUsersData", (req, res) => {
+  ///login DB get user data
+  //proper way to handle error
+  //   try {
+  //     throw new Error("newerror");
+  //     res.send("send data");
+  //   } catch (err) {
+  //     res.status(500).send("something went wrong! contact support");
+  //   }
+  //other way wild card route way handling
+  throw new Error("newerror");
+  res.send("send data");
+});
+
+// Handle Auth Middleware
+app.use("/admin", adminAuth);
+app.get("/admin/getAllData", (req, res) => {
+  //logic to checking if the request is authorize
+  res.send("All data sent");
+});
+
+app.get("/admin/deleteUser", (req, res) => {
+  //logic to checking if the request is authorize
+  res.send("Delete a data");
+});
+
+app.post("/user/login", (req, res) => {
+  res.send("user logged in successfully");
+});
+
 //multple route handler
 app.get(
   "/user",
+  userAuth,
   (req, res, next) => {
     console.log(req.query);
     console.log(req.params);
@@ -117,6 +151,25 @@ app.get(
     },
   ]
 );
+
+//multiple router handler
+app.get("/multipleRoute", (req, res, next) => {
+  console.log("First handler");
+  next();
+});
+app.get("/multipleRoute1", (req, res, next) => {
+  res.send("multipleRoute1");
+});
+app.get("/multipleRoute1", (req, res, next) => {
+  console.log("multipleRoute1 2nd handler");
+  next();
+});
+
+app.get("/multipleRoute", (req, res) => {
+  console.log("second handler");
+  res.send("2nd handler");
+});
+
 //advance routing
 //work for ac abc
 app.get("/ab?c", (req, res) => {
@@ -162,8 +215,11 @@ app.get("/test/2", (req, res) => {});
 app.use("/test", (req, res) => {
   res.send("Namshte Rahul");
 });
-
-app.use("/", (req, res) => {
+//error handler
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send("something went wrong");
+  }
   res.send("Namshte Rahul");
 });
 
