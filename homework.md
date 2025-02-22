@@ -1,0 +1,21 @@
+- Initialize git
+- .gitignore
+- Create a repote repo
+- push all code to remote git hub
+- play with routes extensions ex /hello, hello/2, /xtz
+- Order of routes matter a lot
+- Install postman app and make workspace/collection -<
+- write a logic to handle GET POST PATCH DELETE POST
+- Explore route as use of ?, + () \* in routes
+- USe regex in routes
+- reading the query param in the routes
+
+- create free cluster on mogodb official website
+- install mongoose lib
+- Connect your application to the databace <connectionUrl>/devtinder
+- call connectDB function and connect the database before start application on 7777
+- create schema
+- create userschema
+- create POST /signup API to add data to data base
+- Push some documents using API calls from postman
+- Error handling
