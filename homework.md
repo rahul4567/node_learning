@@ -19,3 +19,7 @@
 - create POST /signup API to add data to data base
 - Push some documents using API calls from postman
 - Error handling
+
+- js object vs JSON object
+- add express.json middleware
+- Make your signup api dynamic way to recieve the data

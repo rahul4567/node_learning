@@ -3,14 +3,12 @@ const { connectDB } = require("./config/database");
 const User = require("./models/user");
 const app = express();
 
+app.use(express.json());
+
 app.post("/signup", async (req, res) => {
+  console.log(req.body);
   try {
-    const userObj = {
-      firstName: "Virat",
-      lastName: "Kholi",
-      emailId: "virat@kohli.com",
-      password: "virat@123",
-    };
+    const userObj = req.body;
     //check if email already exist
     const existingUser = await User.findOne({ emailId: userObj.emailId });
     console.log(existingUser);
