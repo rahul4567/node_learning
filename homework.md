@@ -23,3 +23,7 @@
 - js object vs JSON object
 - add express.json middleware
 - Make your signup api dynamic way to recieve the data
+- findOne which record will return
+- get user by email
+- get feed allUsers GET/feed
+- try other methods mongoose

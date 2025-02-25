@@ -37,6 +37,32 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+//get user by email
+app.get("/user", async (req, res) => {
+  try {
+    const existingUsers = await User.findOne({ emailId: req.body.emailId });
+    if (!existingUsers) {
+      return res.status(400).json({ error: "Email not found" });
+    }
+    res.status(200).json(existingUsers);
+  } catch (err) {
+    return res.status(400).json({ error: "Email not found" });
+  }
+});
+
+// feed api - Get/feed get all user data
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find({});
+    if (!users) {
+      return res.status(400).json({ error: "Email not found" });
+    }
+    res.status(200).json(users);
+  } catch (err) {
+    return res.status(400).json({ error: "Email not found" });
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("Database connection established....");
