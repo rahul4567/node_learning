@@ -27,3 +27,6 @@
 - get user by email
 - get feed allUsers GET/feed
 - try other methods mongoose
+- Difference between put/patch
+- Create Delete user API
+- explore the mongoose

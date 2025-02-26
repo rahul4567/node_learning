@@ -63,6 +63,31 @@ app.get("/feed", async (req, res) => {
   }
 });
 
+app.delete("/user", async (req, res) => {
+  try {
+    const _id = req.body.userId;
+    const user = await User.findByIdAndDelete(_id);
+    res.status(200).json({
+      message: "user deleted successfully",
+    });
+  } catch (err) {
+    return res.status(400).json({ error: "Something went wrong" });
+  }
+});
+
+//update the data
+app.patch("/user", async (req, res) => {
+  try {
+    const _id = req.body.userId;
+    const user = await User.findByIdAndUpdate({ _id: _id }, req.body);
+    res.status(200).json({
+      message: "user updated successfully",
+    });
+  } catch (err) {
+    return res.status(400).json({ error: "Email not found" });
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("Database connection established....");
