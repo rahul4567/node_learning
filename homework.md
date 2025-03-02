@@ -30,3 +30,5 @@
 - Difference between put/patch
 - Create Delete user API
 - explore the mongoose
+- explore schema type option in mongoose -required, unique, minLength, min, defaultValues, create custome validators, for updates enable validator, improve DB schema
+- add timestamps to the schema
