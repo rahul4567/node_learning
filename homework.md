@@ -34,3 +34,5 @@
 - add timestamps to the schema
 - add api level validation and add for more fields
 - Data sanitization
+- install validator
+- add validator to the field

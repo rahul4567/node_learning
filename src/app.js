@@ -5,10 +5,20 @@ const app = express();
 
 app.use(express.json());
 
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 app.post("/signup", async (req, res) => {
   console.log(req.body);
   try {
     const userObj = req.body;
+    console.log(userObj);
+    //check if email is valid
+    // if (!isValidEmail(req.body.emailId?.trim())) {
+    //   throw new Error("Please ender valid email");
+    // }
     //check if email already exist
     const existingUser = await User.findOne({ emailId: userObj.emailId });
     console.log(existingUser);
@@ -33,7 +43,7 @@ app.post("/signup", async (req, res) => {
         .json({ error: "Duplicate email. Try a different one." });
     }
 
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: error.message });
   }
 });
 

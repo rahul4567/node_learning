@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 const { Schema } = mongoose;
 
 const userSchema = mongoose.Schema(
@@ -19,10 +20,22 @@ const userSchema = mongoose.Schema(
       require: true,
       unique: true,
       trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Invalid email address: " + value);
+        }
+      },
     },
     password: {
       type: String,
       require: true,
+      validate(value) {
+        if (!validator.isStrongPassword(value)) {
+          throw new Error(
+            "Password is not strong Enter a strong password: " + value
+          );
+        }
+      },
     },
     age: {
       type: Number,
@@ -39,6 +52,11 @@ const userSchema = mongoose.Schema(
     photoUrl: {
       type: String,
       default: "https://avatars.githubusercontent.com/u/7790161?v=4",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("Invalid photo url: " + value);
+        }
+      },
     },
     about: {
       type: String,
