@@ -1,32 +1,103 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+
 const { connectDB } = require("./config/database");
 const User = require("./models/user");
+const { validateSignUpdata } = require("./utils/validation");
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+    //check email id is
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("Invalid credential");
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log(isPasswordValid);
+    if (!isPasswordValid) {
+      throw new Error("Invalid credential");
+    } else {
+    }
+    //crete a jwt token
+    const token = await jwt.sign({ _id: user._id }, "DEV@Tinder$790");
+    console.log(token);
+    // add the token to cookie
+    // send the response
+    res.cookie("token", token);
+    res.send("Login Successfully");
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+});
+
+app.get("/profile", async (req, res) => {
+  try {
+    //check if token is present in cookie
+    if (!req.cookies.token) {
+      throw new Error("Invalid token");
+    }
+    const cookie = req.cookies;
+    console.log(cookie);
+    const { token } = cookie;
+    //validate token
+    const isTokenValid = await jwt.verify(token, "DEV@Tinder$790");
+    console.log("*********");
+    console.log(isTokenValid);
+    if (!isTokenValid) {
+      throw new Error("Invalid token");
+    }
+    const { _id } = isTokenValid;
+    const user = await User.findById(_id);
+    console.log(user);
+    if (!user) {
+      throw new Error("User not found: Login again");
+    }
+    res.send("profile Successfully");
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+});
+
 app.post("/signup", async (req, res) => {
   console.log(req.body);
   try {
     const userObj = req.body;
     console.log(userObj);
-    //check if email is valid
-    // if (!isValidEmail(req.body.emailId?.trim())) {
-    //   throw new Error("Please ender valid email");
-    // }
-    //check if email already exist
+
+    //first thing is validation of coming data
+    validateSignUpdata(req);
+
+    //encrypt password
+    const { password } = req.body;
+    const passwordHash = await bcrypt.hash(password, 10);
+    console.log(passwordHash);
+
     const existingUser = await User.findOne({ emailId: userObj.emailId });
     console.log(existingUser);
     if (existingUser) {
       return res.status(400).json({ error: "Email already exist" });
     }
     //creating a new instance of the user modal
-    const user = new User(userObj);
+    const { firstName, lastName, emailId } = userObj;
+    const userData = {
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    };
+    const user = new User(userData);
     await user.save();
     res.status(201).json({ message: "User data saved successfully" });
   } catch (error) {

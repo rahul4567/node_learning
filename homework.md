@@ -36,3 +36,17 @@
 - Data sanitization
 - install validator
 - add validator to the field
+- never trust request.body
+
+- Validate data in SignUp API
+- Install bcrypt package
+- Create password Hash using bcrypt.hash & save the user is in encrypted password
+- create login api
+- compare password
+- throw error if email and password is invalid
+
+- Install cookie-parser, jsonwebtoken
+- create jwt token
+- create GET/prfile and check if you get the cookie back
+- In login api create jwt token wilt email id
+- read the cookie inside your profile API and find the logged in user
