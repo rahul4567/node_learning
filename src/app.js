@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const { connectDB } = require("./config/database");
 const User = require("./models/user");
 const { validateSignUpdata } = require("./utils/validation");
+const { userAuth } = require("./middlewares/auth");
 const app = express();
 
 app.use(express.json());
@@ -31,43 +32,37 @@ app.post("/login", async (req, res) => {
     } else {
     }
     //crete a jwt token
-    const token = await jwt.sign({ _id: user._id }, "DEV@Tinder$790");
+    const token = await jwt.sign({ _id: user._id }, "DEV@Tinder$790", {
+      expiresIn: "7d",
+    });
     console.log(token);
     // add the token to cookie
     // send the response
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 900000),
+    });
     res.send("Login Successfully");
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    //check if token is present in cookie
-    if (!req.cookies.token) {
-      throw new Error("Invalid token");
-    }
-    const cookie = req.cookies;
-    console.log(cookie);
-    const { token } = cookie;
-    //validate token
-    const isTokenValid = await jwt.verify(token, "DEV@Tinder$790");
-    console.log("*********");
-    console.log(isTokenValid);
-    if (!isTokenValid) {
-      throw new Error("Invalid token");
-    }
-    const { _id } = isTokenValid;
-    const user = await User.findById(_id);
+    const user = req.user;
     console.log(user);
     if (!user) {
       throw new Error("User not found: Login again");
     }
-    res.send("profile Successfully");
+    res.send(user);
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
+});
+
+app.post("sendConnectionRequest", userAuth, async (req, res) => {
+  console.log("sendConnectionRequest");
+  res.send("Connection request sent!!");
 });
 
 app.post("/signup", async (req, res) => {
