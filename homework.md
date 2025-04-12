@@ -53,3 +53,4 @@
 - create user auth middleware
 - add user auth middleware in profile api and a send new connection request
 - set expire on token and cookie
+- create user schema method get jwt and create userschema method to validate password
