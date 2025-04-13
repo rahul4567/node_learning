@@ -13,6 +13,26 @@ const validateSignUpdata = (req) => {
   }
 };
 
+const validateEditProfileData = (req) => {
+  const allowedEditFields = [
+    "firstName",
+    "lastName",
+    "emailId",
+    "photoUrl",
+    "gender",
+    "age",
+    "about",
+    "stills",
+  ];
+  const keys = Object.keys(req.body);
+  keys.forEach((key) => {
+    if (!allowedEditFields.includes(key)) {
+      throw new Error(`Invalid field: ${key}`);
+    }
+  });
+};
+
 module.exports = {
   validateSignUpdata,
+  validateEditProfileData,
 };
