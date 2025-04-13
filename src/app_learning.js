@@ -215,6 +215,80 @@ app.get("/test/2", (req, res) => {});
 app.use("/test", (req, res) => {
   res.send("Namshte Rahul");
 });
+
+//get user by email
+app.get("/user", async (req, res) => {
+  try {
+    const existingUsers = await User.findOne({ emailId: req.body.emailId });
+    if (!existingUsers) {
+      return res.status(400).json({ error: "Email not found" });
+    }
+    res.status(200).json(existingUsers);
+  } catch (err) {
+    return res.status(400).json({ error: "Email not found" });
+  }
+});
+
+// feed api - Get/feed get all user data
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find({});
+    if (!users) {
+      return res.status(400).json({ error: "Email not found" });
+    }
+    res.status(200).json(users);
+  } catch (err) {
+    return res.status(400).json({ error: "Email not found" });
+  }
+});
+
+app.delete("/user", async (req, res) => {
+  try {
+    const _id = req.body.userId;
+    const user = await User.findByIdAndDelete(_id);
+    res.status(200).json({
+      message: "user deleted successfully",
+    });
+  } catch (err) {
+    return res.status(400).json({ error: "Something went wrong" });
+  }
+});
+
+//update the data
+app.patch("/user/:userId", async (req, res) => {
+  const ALLOWED_UPDATES = [
+    "about",
+    "gender",
+    "photoUrl",
+    "firstName",
+    "lastName",
+    "skills",
+    "age",
+    "userId",
+  ];
+  try {
+    const _id = req.params?.userId;
+    const isUpdatedAllowed = Object.keys(req.body).every((k) => {
+      return ALLOWED_UPDATES.includes(k);
+    });
+    if (!isUpdatedAllowed) {
+      throw new Error("Update not allowed");
+    }
+    if (req.body.skills?.length > 10) {
+      throw new Error("Only 10 skills are allowed");
+    }
+    const user = await User.findByIdAndUpdate({ _id: _id }, req.body, {
+      returnDocument: "after",
+      runValidators: true,
+    });
+    res.status(200).json({
+      message: "user updated successfully",
+    });
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+});
+
 //error handler
 app.use("/", (err, req, res, next) => {
   if (err) {

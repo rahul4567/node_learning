@@ -54,3 +54,12 @@
 - add user auth middleware in profile api and a send new connection request
 - set expire on token and cookie
 - create user schema method get jwt and create userschema method to validate password
+
+- explore tinder APIs
+- Create a list all API you can think of in Dev Tinder
+- Group multiple routers under respective router
+- read documentaion of express router
+- create route folder for managing auth, profile, request routers
+- create authRouter, profileRouter, requestRouter
+- Import these routers in app.js
+-
