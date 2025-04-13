@@ -6,20 +6,6 @@ const { validateSignUpdata } = require("../utils/validation");
 
 const router = express.Router();
 
-function fn(req, res, next) {
-  console.log("I come here");
-  //You can use next primitive to implement a flow control between different middleware functions,
-  //based on a specific program state. Invoking next with the string 'router' will cause all the
-  //remaining route callbacks on that router to be bypassed.
-  next("router");
-}
-router.get("/foo", fn, (req, res, next) => {
-  console.log("I dont come here");
-});
-router.get("/foo", (req, res, next) => {
-  console.log("I dont come here");
-});
-
 router.post("/signup", async (req, res) => {
   console.log(req.body);
   try {
@@ -91,6 +77,20 @@ router.post("/login", async (req, res) => {
       expires: new Date(Date.now() + 900000),
     });
     res.send("Login Successfully");
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+});
+
+router.get("/logout", async (req, res) => {
+  try {
+    // res.cookie("token", null, {
+    //   expires: new Date(Date.now()),
+    // });
+    res.clearCookie("token", {
+      expires: new Date(Date.now()),
+    });
+    res.send("Logout successfully");
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }

@@ -289,6 +289,25 @@ app.patch("/user/:userId", async (req, res) => {
   }
 });
 
+function fn(req, res, next) {
+  console.log("I come here");
+  //You can use next primitive to implement a flow control between different middleware functions,
+  //based on a specific program state. Invoking next with the string 'router' will cause all the
+  //remaining route callbacks on that router to be bypassed.
+  next("router");
+}
+router.get("/foo", fn, (req, res, next) => {
+  console.log("I dont come here");
+});
+router.get("/foo", (req, res, next) => {
+  console.log("I dont come here");
+});
+
+app.get("/foo", (req, res) => {
+  console.log(" I come here too");
+  res.end("good");
+});
+
 //error handler
 app.use("/", (err, req, res, next) => {
   if (err) {

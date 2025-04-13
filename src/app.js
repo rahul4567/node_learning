@@ -23,11 +23,6 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 
-app.get("/foo", (req, res) => {
-  console.log(" I come here too");
-  res.end("good");
-});
-
 connectDB()
   .then(() => {
     console.log("Database connection established....");
