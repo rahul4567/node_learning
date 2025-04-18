@@ -81,6 +81,15 @@ userSchema.methods.getJWT = async function () {
   return token;
 };
 
+userSchema.methods.getDecodedToken = async function (token) {
+  const user = this;
+  const decoded = await jwt.verify(token, "DEV@Tinder$790");
+  if (decoded._id !== user._id.toString()) {
+    throw new Error("Invalid token");
+  }
+  return decoded;
+};
+
 userSchema.methods.validatePassword = async function (passwordInputByUser) {
   const user = this;
   const passwordHash = user.password;

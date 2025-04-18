@@ -62,4 +62,4 @@
 - create route folder for managing auth, profile, request routers
 - create authRouter, profileRouter, requestRouter
 - Import these routers in app.js
--
+- write reset password and forgot password

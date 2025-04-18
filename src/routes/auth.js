@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 
 const User = require("../models/user");
 const { validateSignUpdata } = require("../utils/validation");
+const { sendEmail } = require("../utils/sendEmail");
 
 const router = express.Router();
 
@@ -93,6 +94,44 @@ router.get("/logout", async (req, res) => {
     res.send("Logout successfully");
   } catch (err) {
     return res.status(400).json({ error: err.message });
+  }
+});
+
+router.post("/auth/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  const user = User.find((u) => u.email === email);
+
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  const token = user.getJWT();
+  user.resetToken = token;
+
+  // this should be taken from env
+  const resetLink = `http://localhost:7777/reset-password/${token}`;
+  await sendEmail(email, "Password Reset", `Click here: ${resetLink}`);
+
+  res.json({ message: "Reset link sent to your email" });
+});
+
+router.post("/auth/reset-password/:token", async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    const decoded = user.getDecodedToken(token);
+    const user = User.find(
+      (u) => u.id === decoded.id && u.resetToken === token
+    );
+
+    if (!user)
+      return res.status(400).json({ message: "Invalid or expired token" });
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetToken = null;
+
+    res.json({ message: "Password reset successfully" });
+  } catch (err) {
+    res.status(400).json({ message: "Invalid or expired token" });
   }
 });
 
