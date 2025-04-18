@@ -1,7 +1,7 @@
 const express = require("express");
 
 const { userAuth } = require("../middlewares/auth");
-import { validateEditProfileData } from "../utils/validation";
+const { validateEditProfileData } = require("../utils/validation");
 const router = express.Router();
 
 router.get("/profile/view", userAuth, async (req, res) => {
