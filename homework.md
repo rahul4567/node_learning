@@ -63,3 +63,14 @@
 - create authRouter, profileRouter, requestRouter
 - Import these routers in app.js
 - write reset password and forgot password
+
+- create connection request schema
+- add proper validation of data
+- think about corner cases
+- $or query $and
+- Read about compound indexing
+- why we should not create unneccesary indexed
+- compound indxes
+- advantae and disadvantage of index
+- inverse query
+- pre function
