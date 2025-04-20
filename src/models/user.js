@@ -76,6 +76,8 @@ const userSchema = mongoose.Schema(
 
 userSchema.methods.getJWT = async function () {
   const user = this;
+  console.log("###############");
+  console.log(user);
   const token = await jwt.sign({ _id: user._id.toString() }, "DEV@Tinder$790", {
     expiresIn: "1h",
   });
@@ -84,6 +86,8 @@ userSchema.methods.getJWT = async function () {
 
 userSchema.methods.getDecodedToken = async function (token) {
   const user = this;
+  console.log("###############");
+  console.log(user);
   const decoded = await jwt.verify(token, "DEV@Tinder$790");
   if (decoded._id !== user._id.toString()) {
     throw new Error("Invalid token");
@@ -94,10 +98,12 @@ userSchema.methods.getDecodedToken = async function (token) {
 userSchema.methods.validatePassword = async function (passwordInputByUser) {
   const user = this;
   const passwordHash = user.password;
+  console.log(passwordInputByUser, passwordHash);
   const isPasswordValid = await bcrypt.compare(
     passwordInputByUser,
     passwordHash
   );
+  console.log("isPasswordValid", isPasswordValid);
   return isPasswordValid;
 };
 

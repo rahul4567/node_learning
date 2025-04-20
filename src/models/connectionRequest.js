@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Types;
 
 const connectionRequestSchema = mongoose.Schema(
   {
@@ -29,7 +30,7 @@ connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
 connectionRequestSchema.pre("save", function (next) {
   const connectionRequest = this;
   // check if fromUserID is same as toUserId
-  if (connectionRequest.fromUserId.equal(connectionRequest.toUserId)) {
+  if (connectionRequest.fromUserId.equals(connectionRequest.toUserId)) {
     throw new Error("You cannot send request to yourself");
   }
   next();

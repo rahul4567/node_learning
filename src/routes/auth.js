@@ -1,5 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 const { validateSignUpdata } = require("../utils/validation");
@@ -60,6 +61,7 @@ router.post("/login", async (req, res) => {
     const { emailId, password } = req.body;
     //check email id is
     const user = await User.findOne({ emailId: emailId });
+    console.log(user);
     if (!user) {
       throw new Error("Invalid credential");
     }
@@ -99,39 +101,41 @@ router.get("/logout", async (req, res) => {
 
 router.post("/auth/forgot-password", async (req, res) => {
   const { email } = req.body;
-  const user = User.find((u) => u.email === email);
+  const user = await User.findOne({ emailId: email });
 
   if (!user) return res.status(404).json({ message: "User not found" });
 
-  const token = user.getJWT();
+  const token = await user.getJWT();
   user.resetToken = token;
+  console.log(token);
 
   // this should be taken from env
-  const resetLink = `http://localhost:7777/reset-password/${token}`;
-  await sendEmail(email, "Password Reset", `Click here: ${resetLink}`);
+  const resetLink = `http://localhost:7777/auth/reset-password/${token}`;
+  console.log(resetLink);
+  //await sendEmail(email, "Password Reset", `Click here: ${resetLink}`);
 
-  res.json({ message: "Reset link sent to your email" });
+  res.json({ message: "Reset link sent to your email", resetLink });
 });
 
 router.post("/auth/reset-password/:token", async (req, res) => {
-  const { token } = req.params;
-  const { newPassword } = req.body;
-
   try {
-    const decoded = user.getDecodedToken(token);
-    const user = User.find(
-      (u) => u.id === decoded.id && u.resetToken === token
-    );
+    const { token } = req.params;
+    const { newPassword } = req.body;
+    const decodeObj = await jwt.verify(token, "DEV@Tinder$790");
+    console.log(decodeObj);
+    const { _id } = decodeObj;
+    const user = await User.findById(_id);
 
     if (!user)
       return res.status(400).json({ message: "Invalid or expired token" });
 
     user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
     user.resetToken = null;
 
     res.json({ message: "Password reset successfully" });
   } catch (err) {
-    res.status(400).json({ message: "Invalid or expired token" });
+    res.status(400).json({ message: err });
   }
 });
 
