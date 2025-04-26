@@ -50,12 +50,13 @@ router.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
         data: existingRequest,
       });
     }
-
+    console.log("****************");
     const connectionRequest = new ConnectionRequest({
       fromUserId,
       toUserId,
       status,
     });
+    console.log("**TTTTT**************");
     const savedRequest = await connectionRequest.save();
     res.status(201).json({
       message: `${req.user.firstName} is ${status} in you`,

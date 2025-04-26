@@ -80,3 +80,16 @@
 - read about ref and popuate
 - write get /user/requests api
 - write get api user connection
+
+- Logic for GET /feed api
+- Eplore the $nin, $and, $ne and other query operators
+- Pagination
+
+/feed?page=1&limit=10 => 1 - 10 users => .skip(0) & .limit(10)
+/feed?page=2&limit=10 => 11 - 20 users => .skip(10) & .limit(10)
+/feed?page=3&limit=10 => 21 - 30 users => .skip(20) & .limit(10)
+
+skip => pageNumber => (pageNumber - 1) multiply limit
+
+mongoose
+.skip() and .limit()
