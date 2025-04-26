@@ -74,3 +74,9 @@
 - advantae and disadvantage of index
 - inverse query
 - pre function
+
+- write review api post call with proper validation
+- get vs post thought process
+- read about ref and popuate
+- write get /user/requests api
+- write get api user connection
